@@ -55,7 +55,7 @@ class ServerServiceProvider implements ServiceProviderInterface
         };
 
         $pimple['server'] = function ($pimple) {
-            $server = new Guard($pimple['config']['token']);
+            $server = new Guard($pimple['config']['token'], $pimple['request']);
 
             $server->debug($pimple['config']['debug']);
 

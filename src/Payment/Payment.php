@@ -27,6 +27,7 @@ use EasyWeChat\Support\Url as UrlHelper;
 use EasyWeChat\Support\XML;
 use Overtrue\Socialite\AccessTokenInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Payment.
@@ -60,15 +61,23 @@ class Payment
     protected $cache;
 
     /**
+     * Request instance.
+     *
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    protected $request;
+
+    /**
      * Constructor.
      *
      * @param \EasyWeChat\Payment\Merchant      $merchant
      * @param \Doctrine\Common\Cache\Cache|null $cache
      */
-    public function __construct(Merchant $merchant, Cache $cache = null)
+    public function __construct(Merchant $merchant, Cache $cache = null, Request $request = null)
     {
         $this->merchant = $merchant;
         $this->cache = $cache;
+        $this->request = $request;
     }
 
     /**
@@ -337,7 +346,7 @@ class Payment
      */
     public function getNotify()
     {
-        return new Notify($this->merchant);
+        return new Notify($this->merchant, $this->request);
     }
 
     /**
@@ -347,7 +356,7 @@ class Payment
      */
     public function getRefundNotify()
     {
-        return new RefundNotify($this->merchant);
+        return new RefundNotify($this->merchant, $this->request);
     }
 
     /**
