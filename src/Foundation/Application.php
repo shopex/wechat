@@ -228,13 +228,9 @@ class Application extends Container
      */
     private function registerBase()
     {
-        if(!empty($this['config']['request'])) {
-            $this['request'] = $this['config']['request'];
-        } else {
-            $this['request'] = function () {
-                return Request::createFromGlobals();
-            };
-        }
+        $this['request'] = function () {
+            return Request::createFromGlobals();
+        };
 
         if (!empty($this['config']['cache']) && $this['config']['cache'] instanceof CacheInterface) {
             $this['cache'] = $this['config']['cache'];
