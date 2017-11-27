@@ -3,8 +3,7 @@
 /*
  * This file is part of the overtrue/wechat.
  *
- * (c) overtrue <i@overtrue.me>
- *
+ * (c) overtrue <i@overtrue.me> *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
@@ -229,9 +228,13 @@ class Application extends Container
      */
     private function registerBase()
     {
-        $this['request'] = function () {
-            return Request::createFromGlobals();
-        };
+        if(!empty($this['config']['request'])) {
+            $this['request'] = $this['config']['request'];
+        } else {
+            $this['request'] = function () {
+                return Request::createFromGlobals();
+            };
+        }
 
         if (!empty($this['config']['cache']) && $this['config']['cache'] instanceof CacheInterface) {
             $this['cache'] = $this['config']['cache'];
