@@ -84,7 +84,7 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             return new OpenPlatform($pimple);
         };
 
-        $pimple['open_platform.server'] = function ($pimple) {
+        $pimple['open_platform.server'] = $pimple->factory(function ($pimple) {
             $server = new Guard($pimple['config']['open_platform']['token'], $pimple['request']);
             $server->debug($pimple['config']['debug']);
             $server->setEncryptor($pimple['open_platform.encryptor']);
@@ -96,21 +96,21 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             ]);
 
             return $server;
-        };
+        });
 
-        $pimple['open_platform.pre_auth'] = $pimple['open_platform.pre_authorization'] = function ($pimple) {
+        $pimple['open_platform.pre_auth'] = $pimple->factory($pimple['open_platform.pre_authorization'] = function ($pimple) {
             return new PreAuthorization(
                 $pimple['open_platform.access_token'],
                 $pimple['request']
             );
-        };
+        });
 
-        $pimple['open_platform.api'] = function ($pimple) {
+        $pimple['open_platform.api'] = $pimple->factory(function ($pimple) {
             return new BaseApi(
                 $pimple['open_platform.access_token'],
                 $pimple['request']
             );
-        };
+        });
 
         $pimple['open_platform.authorizer'] = function ($pimple) {
             return new Authorizer(
@@ -146,7 +146,7 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
         };
 
         // OAuth for OpenPlatform.
-        $pimple['open_platform.oauth'] = function ($pimple) {
+        $pimple['open_platform.oauth'] = $pimple->factory(function ($pimple) {
             $callback = $this->prepareCallbackUrl($pimple);
             $scopes = $pimple['config']->get('open_platform.oauth.scopes', []);
             $config = [
@@ -166,7 +166,7 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             }
 
             return $socialite;
-        };
+        });
     }
 
     /**

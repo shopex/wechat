@@ -54,7 +54,7 @@ class ServerServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $pimple['server'] = function ($pimple) {
+        $pimple['server'] = $pimple->factory(function ($pimple) {
             $server = new Guard($pimple['config']['token'], $pimple['request']);
 
             $server->debug($pimple['config']['debug']);
@@ -62,6 +62,6 @@ class ServerServiceProvider implements ServiceProviderInterface
             $server->setEncryptor($pimple['encryptor']);
 
             return $server;
-        };
+        });
     }
 }

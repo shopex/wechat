@@ -41,7 +41,7 @@ class OAuthServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['oauth'] = function ($pimple) {
+        $pimple['oauth'] = $pimple->factory(function ($pimple) {
             $callback = $this->prepareCallbackUrl($pimple);
             $scopes = $pimple['config']->get('oauth.scopes', []);
             $config = [
@@ -61,7 +61,7 @@ class OAuthServiceProvider implements ServiceProviderInterface
             }
 
             return $socialite;
-        };
+        });
     }
 
     /**
