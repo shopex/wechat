@@ -45,8 +45,8 @@ class ShakeAroundServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['shakearound'] = function ($pimple) {
+        $pimple['shakearound'] = $pimple->factory(function ($pimple) {
             return new ShakeAround($pimple['access_token']);
-        };
+        });
     }
 }

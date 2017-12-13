@@ -113,7 +113,7 @@ class Guard
     public function __construct($token, Request $request = null)
     {
         $this->token = $token;
-        $this->request = $request ?: Request::createFromGlobals();
+        $this->request = $request;
     }
 
     /**
@@ -140,16 +140,16 @@ class Guard
     public function serve()
     {
         Log::debug('Request received:', [
-            'Method' => $this->request->getMethod(),
-            'URI' => $this->request->getRequestUri(),
-            'Query' => $this->request->getQueryString(),
-            'Protocal' => $this->request->server->get('SERVER_PROTOCOL'),
-            'Content' => $this->request->getContent(),
+            'Method' => $this->getRequest()->getMethod(),
+            'URI' => $this->getRequest()->getRequestUri(),
+            'Query' => $this->getRequest()->getQueryString(),
+            'Protocal' => $this->getRequest()->server->get('SERVER_PROTOCOL'),
+            'Content' => $this->getRequest()->getContent(),
         ]);
 
         $this->validate($this->token);
 
-        if ($str = $this->request->get('echostr')) {
+        if ($str = $this->getRequest()->get('echostr')) {
             Log::debug("Output 'echostr' is '$str'.");
 
             return new Response($str);
@@ -175,11 +175,11 @@ class Guard
     {
         $params = [
             $token,
-            $this->request->get('timestamp'),
-            $this->request->get('nonce'),
+            $this->getRequest()->get('timestamp'),
+            $this->getRequest()->get('nonce'),
         ];
 
-        if (!$this->debug && $this->request->get('signature') !== $this->signature($params)) {
+        if (!$this->debug && $this->getRequest()->get('signature') !== $this->signature($params)) {
             throw new FaultException('Invalid request signature.', 400);
         }
     }
@@ -223,7 +223,11 @@ class Guard
      */
     public function getRequest()
     {
-        return $this->request;
+        if (isset($this->request)) {
+            return $this->request;
+        } else {
+            return app('request');
+        }
     }
 
     /**
@@ -301,8 +305,8 @@ class Guard
             Log::debug('Message safe mode is enable.');
             $response = $this->encryptor->encryptMsg(
                 $response,
-                $this->request->get('nonce'),
-                $this->request->get('timestamp')
+                $this->getRequest()->get('nonce'),
+                $this->getRequest()->get('timestamp')
             );
         }
 
@@ -340,7 +344,7 @@ class Guard
      */
     public function getMessage()
     {
-        $message = $this->parseMessageFromRequest($this->request->getContent(false));
+        $message = $this->parseMessageFromRequest($this->getRequest()->getContent(false));
 
         if (!is_array($message) || empty($message)) {
             throw new BadRequestException('Invalid request.');
@@ -465,9 +469,9 @@ class Guard
             }
 
             $message = $this->encryptor->decryptMsg(
-                $this->request->get('msg_signature'),
-                $this->request->get('nonce'),
-                $this->request->get('timestamp'),
+                $this->getRequest()->get('msg_signature'),
+                $this->getRequest()->get('nonce'),
+                $this->getRequest()->get('timestamp'),
                 $content
             );
         } else {
@@ -484,6 +488,6 @@ class Guard
      */
     private function isSafeMode()
     {
-        return $this->request->get('encrypt_type') && 'aes' === $this->request->get('encrypt_type');
+        return $this->getRequest()->get('encrypt_type') && 'aes' === $this->getRequest()->get('encrypt_type');
     }
 }

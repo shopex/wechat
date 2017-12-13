@@ -46,11 +46,25 @@ abstract class AbstractOpenPlatform extends AbstractAPI
      * @param \EasyWeChat\OpenPlatform\AccessToken      $accessToken
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
-    public function __construct(AccessToken $accessToken, Request $request)
+    public function __construct(AccessToken $accessToken, Request $request = null)
     {
         parent::__construct($accessToken);
 
         $this->request = $request;
+    }
+
+    /**
+     * Request getter.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if (isset($this->request)) {
+            return $this->request;
+        } else {
+            return app('request');
+        }
     }
 
     /**

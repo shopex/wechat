@@ -61,7 +61,21 @@ class Notify
     public function __construct(Merchant $merchant, Request $request = null)
     {
         $this->merchant = $merchant;
-        $this->request = $request ?: Request::createFromGlobals();
+        $this->request = $request;
+    }
+
+    /**
+     * Request getter.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if (isset($this->request)) {
+            return $this->request;
+        } else {
+            return app('request');
+        }
     }
 
     /**
@@ -90,7 +104,7 @@ class Notify
         }
 
         try {
-            $xml = XML::parse(strval($this->request->getContent()));
+            $xml = XML::parse(strval($this->getRequest()->getContent()));
         } catch (\Throwable $t) {
             throw new FaultException('Invalid request XML: '.$t->getMessage(), 400);
         } catch (\Exception $e) {

@@ -228,13 +228,9 @@ class Application extends Container
      */
     private function registerBase()
     {
-        if(!empty($this['config']['request'])) {
-            $this['request'] = $this->factory($this['config']['request']);
-        } else {
-            $this['request'] = function () {
-                return Request::createFromGlobals();
-            };
-        }
+        $this['request'] = $this->factory(function () {
+            return app('request');
+        });
 
         if (!empty($this['config']['cache']) && $this['config']['cache'] instanceof CacheInterface) {
             $this['cache'] = $this['config']['cache'];
@@ -244,13 +240,13 @@ class Application extends Container
             };
         }
 
-        $this['access_token'] = function () {
+        $this['access_token'] = $this->factory(function () {
             return new AccessToken(
                 $this['config']['app_id'],
                 $this['config']['secret'],
                 $this['cache']
             );
-        };
+        });
     }
 
     /**

@@ -41,11 +41,11 @@ class JsServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['js'] = function ($pimple) {
+        $pimple['js'] = $pimple->factory(function ($pimple) {
             $js = new Js($pimple['access_token']);
             $js->setCache($pimple['cache']);
 
             return $js;
-        };
+        });
     }
 }

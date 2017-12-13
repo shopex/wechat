@@ -41,8 +41,8 @@ class ReplyServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['reply'] = function ($pimple) {
+        $pimple['reply'] = $pimple->factory(function ($pimple) {
             return new Reply($pimple['access_token']);
-        };
+        });
     }
 }

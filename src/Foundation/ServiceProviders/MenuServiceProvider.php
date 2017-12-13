@@ -41,8 +41,8 @@ class MenuServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['menu'] = function ($pimple) {
+        $pimple['menu'] = $pimple->factory(function ($pimple) {
             return new Menu($pimple['access_token']);
-        };
+        });
     }
 }

@@ -67,7 +67,7 @@ class BaseApi extends AbstractOpenPlatform
     {
         $params = [
             'component_appid' => $this->getAppId(),
-            'authorization_code' => $authCode ?: $this->request->get('auth_code'),
+            'authorization_code' => $authCode ?: $this->getRequest()->get('auth_code'),
         ];
 
         return $this->parseJSON('json', [self::GET_AUTH_INFO, $params]);

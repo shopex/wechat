@@ -54,14 +54,14 @@ class ServerServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $pimple['server'] = $pimple->factory(function ($pimple) {
-            $server = new Guard($pimple['config']['token'], $pimple['request']);
+        $pimple['server'] = function ($pimple) {
+            $server = new Guard($pimple['config']['token']);
 
             $server->debug($pimple['config']['debug']);
 
             $server->setEncryptor($pimple['encryptor']);
 
             return $server;
-        });
+        };
     }
 }

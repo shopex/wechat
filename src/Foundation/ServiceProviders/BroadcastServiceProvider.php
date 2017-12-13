@@ -41,8 +41,8 @@ class BroadcastServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['broadcast'] = function ($pimple) {
+        $pimple['broadcast'] = $pimple->factory(function ($pimple) {
             return new Broadcast($pimple['access_token']);
-        };
+        });
     }
 }

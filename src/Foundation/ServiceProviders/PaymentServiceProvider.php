@@ -49,23 +49,23 @@ class PaymentServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['merchant'] = function ($pimple) {
+        $pimple['merchant'] = $pimple->factory(function ($pimple) {
             $config = array_merge(
                 ['app_id' => $pimple['config']['app_id']],
                 $pimple['config']->get('payment', [])
             );
 
             return new Merchant($config);
-        };
+        });
 
-        $pimple['payment'] = $pimple->factory(function ($pimple) {
-            $payment = new Payment($pimple['merchant'], $pimple['cache'], $pimple['request']);
+        $pimple['payment'] = function ($pimple) {
+            $payment = new Payment($pimple['merchant'], $pimple['cache']);
             $payment->sandboxMode(
                 (bool) $pimple['config']->get('payment.sandbox_mode')
             );
 
             return $payment;
-        });
+        };
 
         $pimple['lucky_money'] = function ($pimple) {
             return new LuckyMoney($pimple['merchant']);

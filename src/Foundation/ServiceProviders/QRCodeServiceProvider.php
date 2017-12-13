@@ -45,8 +45,8 @@ class QRCodeServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['qrcode'] = function ($pimple) {
+        $pimple['qrcode'] = $pimple->factory(function ($pimple) {
             return new QRCode($pimple['access_token']);
-        };
+        });
     }
 }

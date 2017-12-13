@@ -54,7 +54,7 @@ class OAuthServiceProvider implements ServiceProviderInterface
             if ($pimple['config']->has('guzzle')) {
                 $config['guzzle'] = $pimple['config']['guzzle'];
             }
-            $socialite = (new Socialite($config))->driver('wechat');
+            $socialite = (new Socialite($config, $pimple['request']))->driver('wechat');
 
             if (!empty($scopes)) {
                 $socialite->scopes($scopes);

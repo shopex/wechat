@@ -45,8 +45,8 @@ class POIServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['poi'] = function ($pimple) {
+        $pimple['poi'] = $pimple->factory(function ($pimple) {
             return new POI($pimple['access_token']);
-        };
+        });
     }
 }

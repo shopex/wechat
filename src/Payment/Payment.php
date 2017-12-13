@@ -81,6 +81,20 @@ class Payment
     }
 
     /**
+     * Request getter.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if (isset($this->request)) {
+            return $this->request;
+        } else {
+            return app('request');
+        }
+    }
+
+    /**
      * Build payment scheme for product.
      *
      * @param string $productId
@@ -346,7 +360,7 @@ class Payment
      */
     public function getNotify()
     {
-        return new Notify($this->merchant, $this->request);
+        return new Notify($this->merchant, $this->getRequest());
     }
 
     /**
@@ -356,7 +370,7 @@ class Payment
      */
     public function getRefundNotify()
     {
-        return new RefundNotify($this->merchant, $this->request);
+        return new RefundNotify($this->merchant, $this->getRequest());
     }
 
     /**

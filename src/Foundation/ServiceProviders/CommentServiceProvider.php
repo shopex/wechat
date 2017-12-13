@@ -33,8 +33,8 @@ class CommentServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['comment'] = function ($pimple) {
+        $pimple['comment'] = $pimple->factory(function ($pimple) {
             return new Comment($pimple['access_token']);
-        };
+        });
     }
 }

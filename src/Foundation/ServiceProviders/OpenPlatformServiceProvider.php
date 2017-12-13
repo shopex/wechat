@@ -84,8 +84,8 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             return new OpenPlatform($pimple);
         };
 
-        $pimple['open_platform.server'] = $pimple->factory(function ($pimple) {
-            $server = new Guard($pimple['config']['open_platform']['token'], $pimple['request']);
+        $pimple['open_platform.server'] = function ($pimple) {
+            $server = new Guard($pimple['config']['open_platform']['token']);
             $server->debug($pimple['config']['debug']);
             $server->setEncryptor($pimple['open_platform.encryptor']);
             $server->setHandlers([
@@ -96,21 +96,19 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             ]);
 
             return $server;
-        });
+        };
 
-        $pimple['open_platform.pre_auth'] = $pimple->factory($pimple['open_platform.pre_authorization'] = function ($pimple) {
+        $pimple['open_platform.pre_auth'] = $pimple['open_platform.pre_authorization'] = function ($pimple) {
             return new PreAuthorization(
-                $pimple['open_platform.access_token'],
-                $pimple['request']
+                $pimple['open_platform.access_token']
             );
-        });
+        };
 
-        $pimple['open_platform.api'] = $pimple->factory(function ($pimple) {
+        $pimple['open_platform.api'] = function ($pimple) {
             return new BaseApi(
-                $pimple['open_platform.access_token'],
-                $pimple['request']
+                $pimple['open_platform.access_token']
             );
-        });
+        };
 
         $pimple['open_platform.authorizer'] = function ($pimple) {
             return new Authorizer(
@@ -120,12 +118,12 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $pimple['open_platform.authorizer_access_token'] = function ($pimple) {
+        $pimple['open_platform.authorizer_access_token'] = $pimple->factory(function ($pimple) {
             return new AuthorizerAccessToken(
                 $pimple['config']['open_platform']['app_id'],
                 $pimple['open_platform.authorizer']
             );
-        };
+        });
 
         // Authorization events handlers.
         $pimple['open_platform.handlers.component_verify_ticket'] = function ($pimple) {
@@ -159,7 +157,7 @@ class OpenPlatformServiceProvider implements ServiceProviderInterface
             if ($pimple['config']->has('guzzle')) {
                 $config['guzzle'] = $pimple['config']['guzzle'];
             }
-            $socialite = (new Socialite($config))->driver('wechat_open');
+            $socialite = (new Socialite($config, $pimple['request']))->driver('wechat_open');
 
             if (!empty($scopes)) {
                 $socialite->scopes($scopes);

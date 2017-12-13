@@ -42,13 +42,13 @@ class MaterialServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['material'] = function ($pimple) {
+        $pimple['material'] = $pimple->factory(function ($pimple) {
             return new Material($pimple['access_token']);
-        };
+        });
 
-        $temporary = function ($pimple) {
+        $temporary = $pimple->factory(function ($pimple) {
             return new Temporary($pimple['access_token']);
-        };
+        });
 
         $pimple['material_temporary'] = $temporary;
         $pimple['material.temporary'] = $temporary;

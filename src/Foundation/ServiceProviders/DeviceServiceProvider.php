@@ -45,8 +45,8 @@ class DeviceServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['device'] = function ($pimple) {
+        $pimple['device'] = $pimple->factory(function ($pimple) {
             return new Device($pimple['access_token'], $pimple['config']->get('device', []));
-        };
+        });
     }
 }

@@ -36,8 +36,8 @@ class FundamentalServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['fundamental.api'] = function ($pimple) {
+        $pimple['fundamental.api'] = $pimple->factory(function ($pimple) {
             return new API($pimple['access_token']);
-        };
+        });
     }
 }
