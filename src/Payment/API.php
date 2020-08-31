@@ -455,7 +455,11 @@ class API extends AbstractAPI
 
         $response = $this->getHttp()->request($api, $method, $options);
 
-        return $returnResponse ? $response : $this->parseResponse($response);
+        $response = $this->getHttp()->request($api, $method, $options);
+        $parseResponse = $this->parseResponse($response);
+        $parseResponse->request_body = $params;
+
+        return $returnResponse ? $response : $parseResponse;
     }
 
     /**
